@@ -46,13 +46,13 @@ const TournamentCard = ({ tournament, finished }) => {
   const joinEndDate =
     tournament &&
     handleTournamentDateAndTime(
-      new Date(new Date(tournament.StartsAt).getTime() - 5 * 1000 * 60)
+      new Date(new Date(tournament.StartsAt).getTime() - 2 * 1000 * 60)
     ).date;
 
   const joinEndTime =
     tournament &&
     handleTournamentDateAndTime(
-      new Date(new Date(tournament.StartsAt).getTime() - 5 * 1000 * 60)
+      new Date(new Date(tournament.StartsAt).getTime() - 2 * 1000 * 60)
     ).time;
 
   const startDate =
