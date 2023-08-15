@@ -1,11 +1,11 @@
 
-# <img align="left" alt="Coding" width="40" src="https://cdn-icons-png.flaticon.com/128/3083/3083603.png" alt="chess tournament"/> <a>Chess Tournament</a>
+# <img align="left" alt="Coding" width="40" src="https://cdn-icons-png.flaticon.com/128/3083/3083603.png" alt="chess tournament"/> <a href="https://chess-tournament.onrender.com">Chess Tournament</a>
 
 
 ## <img align="left" alt="Coding" width="20" src="https://media0.giphy.com/media/3o85xvnSxCKJZaSYmI/giphy.webp?cid=ecf05e47fg31vxa0zgaovhivquofwybir90x72kgvb9iga47&ep=v1_gifs_search&rid=giphy.webp&ct=g" alt=""/>Story Behind Project:
 >Ever had that 💡 moment during a riveting game of chess with friends? We did too! Picture this: a user-friendly website that takes chess tournaments to the next level. That's exactly what we've created. Inspired by our love for the game, we've developed a platform that effortlessly organizes tournaments and brings the chess community together. Join us in celebrating the marriage of innovation and fun!
 
-            # 🌟 Welcome to the Ultimate Chess Tournament Platform! 🏆
+<h1 align="center"> 🌟 Welcome to the Ultimate Chess Tournament Platform! 🏆<h1>
 
 If chess is your passion and competition fuels your spirit, look no further! Our meticulously crafted website is your gateway to an electrifying world of chess tournaments. 🌐
 
