@@ -12,17 +12,22 @@ const HowToBracketsTournament = () => {
     <Box className={`grid-stretch ${styles.howToPointsTournament}`}>
       <Head line={true} h = {"h4"} align="left" title={"Brackets Tournament"}/>
       <List>
-        <ListItem>
-          <Typography variant='h5'>♟️ You should to set date of tournament in future and you should to set tournament name different from The Live Tournaments.</Typography>
+        <ListItem className={`grid-start`}>
+          <Typography variant='h5'>♟️ There are three Buttons : </Typography>
+          <List>
+            <ListItem>
+              <Typography variant='h6'>⏺️ Match Button : Go to Match of The Round</Typography>
+            </ListItem>
+            <ListItem>
+              <Typography variant='h6'>🆚 Abort Button : You can abort Match if your challenger will be lated more than 10 minutes and you already joined The Match</Typography>
+            </ListItem>
+            <ListItem>
+              <Typography variant='h6'>🆑 Finish Button : You can clicked on it when The Match will be Finished.</Typography>
+            </ListItem>
+          </List>
         </ListItem>
         <ListItem>
-          <Typography variant='h5'>♟️ You should to set a number powered of 2 in 'Maximum Number of Players' Input</Typography>
-        </ListItem>
-        <ListItem>
-          <Typography variant='h5'>♟️ Make sure that your friends steady to join Tournament after you had created it</Typography>
-        </ListItem>
-        <ListItem>
-          <Typography sx={{color:theme.palette.primary.main}} variant='h5'>♟️ Don't forgot to Enjoy. 😎</Typography>
+          <Typography variant='h5'>♟️ To Win Bracket Tournament , You should win all The Matches 🤬</Typography>
         </ListItem>
       </List>
       <Box className={`flex-center  ${styles.images}`}>
