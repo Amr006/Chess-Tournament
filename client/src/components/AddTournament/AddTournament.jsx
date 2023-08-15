@@ -67,8 +67,8 @@ const AddTournament = () => {
         const date = values.date
         const time = values.time
         const startsAt = date+"T"+time+":00+03:00"
-        if(((new Date(startsAt).getTime()/(1000 * 60)) - (new Date().getTime()/(1000*60))) <= 5){
-            handleToastMessage("Tournament Date and Time must be at least 5 min early from Now","i")
+        if(((new Date(startsAt).getTime()/(1000 * 60)) - (new Date().getTime()/(1000*60))) <= 2){
+            handleToastMessage("Tournament Date and Time must be at least 2 min early from Now","i")
             return;
         }
         values = {...values,  startsAt : startsAt , creator:username}
