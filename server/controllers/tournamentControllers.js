@@ -409,7 +409,7 @@ const abortMatch = async (req, res, next) => {
           var timeDifferenceMs = result.firstUserEntered.getTime() - timeNow;
           console.log(Math.abs(timeDifferenceMs / (1000 * 60)));
           if (
-            Math.abs(timeDifferenceMs / (1000 * 60)) > 10 &&
+            Math.abs(timeDifferenceMs / (1000 * 60)) > 3 &&
             !result.hasOwnProperty("secondUserEntered")
           ) {
             req.forfree = user;
@@ -420,7 +420,7 @@ const abortMatch = async (req, res, next) => {
           var timeDifferenceMs = result.secondUserEntered.getTime() - timeNow;
           console.log(Math.abs(timeDifferenceMs / (1000 * 60)));
           if (
-            Math.abs(timeDifferenceMs / (1000 * 60)) > 10 &&
+            Math.abs(timeDifferenceMs / (1000 * 60)) > 3 &&
             !result.hasOwnProperty("firstUserEntered")
           ) {
             req.forfree = user;

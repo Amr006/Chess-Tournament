@@ -299,7 +299,7 @@ const abortMatch = async (req, res, next) => {
             result[0].Matches[round - 1].firstUserEntered.Time.getTime() -
             timeNow;
           //console.log(Math.abs(timeDifferenceMs / (1000 * 60)));
-          if (Math.abs(timeDifferenceMs / (1000 * 60)) > 10) {
+          if (Math.abs(timeDifferenceMs / (1000 * 60)) > 3) {
             req.forfree = user;
             console.log(user);
             return next();

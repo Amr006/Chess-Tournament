@@ -69,7 +69,7 @@ const addTournament = async (req, res, next) => {
       .then((result) => {
         console.log(result);
         var targetDateTime = new Date(result.StartsAt); // Convert the timestamp to a Date object
-        const fiveMinutesInMillis = 5 * 60 * 1000; // Use 5 minutes instead of 3
+        const fiveMinutesInMillis = 2 * 60 * 1000; // Use 5 minutes instead of 3
         targetDateTime = new Date(targetDateTime - fiveMinutesInMillis); 
         
         const minute = targetDateTime.getMinutes();
