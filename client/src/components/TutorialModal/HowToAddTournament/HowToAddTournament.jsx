@@ -12,10 +12,16 @@ const HowToAddTournament = () => {
       <Head line={true} h = {"h4"} align="left" title={"How To Add Your Tournament"} list={true}/>
       <List>
         <ListItem>
-          <Typography variant='h5'>♟️ You should to set date of tournament in future and you should to set tournament name different from The Live Tournaments.</Typography>
+          <Typography variant='h5'>♟️ You should to set date of tournament early 2 minutes at least because the Joining of Tournament will be closed before the start date by 2 minutes.</Typography>
         </ListItem>
         <ListItem>
-          <Typography variant='h5'>♟️ You should to set a number powered of 2 in 'Maximum Number of Players' Input</Typography>
+          <Typography variant='h5'>♟️ You shouldn't set Tournament Name that is already exist.</Typography>
+        </ListItem>
+        <ListItem>
+          <Typography variant='h5'>♟️ You should to set a number powered of 2 in 'Maximum Number of Players' Input if You chosen Bracket.</Typography>
+        </ListItem>
+        <ListItem>
+          <Typography variant='h5'>♟️ You should to set a Even Number in 'Maximum Number of Players' Input if You chosen Points.</Typography>
         </ListItem>
         <ListItem>
           <Typography variant='h5'>♟️ Make sure that your friends steady to join Tournament after you had created it</Typography>
