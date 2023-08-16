@@ -600,15 +600,32 @@ function options(type, currentUrl, uniqueString, Email, _id) {
 const sendVerificationEmail = async ({ _id, Email }, type, res) => {
   const currentUrl = "https://chess-tournament.onrender.com";
   const uniqueString = uuidv4() + _id;
-
+  
+  
   //console.log(uniqueString);
-  const alreadySendCheck = await Userverification.findOne({ userId: _id });
-  if (alreadySendCheck) {
-    return res.status(402).json({
-      message: "You have already sent verification email",
+
+  if(type=="forgotPassword")
+  {  
+    const alreadySendCheck = await Userverification.findOne({ userId: _id });
+    if (alreadySendCheck) {
+      return res.status(402).json({
+        message: "You have already sent verification email",
+      });
+    }else
+    {
+      res.json({
+        status: "pending",
+        message: "verification email sent",
+      });
+    }
+  }else
+  {
+    res.json({
+      status: "pending",
+      message: "verification email sent",
     });
   }
-
+  console.log(type)
   const mailOptions = options(type, currentUrl, uniqueString, Email, _id);
   bcrypt.hash(uniqueString, 10, (err, hashedUniqueString) => {
     if (err) {
@@ -629,10 +646,7 @@ const sendVerificationEmail = async ({ _id, Email }, type, res) => {
           transporter
             .sendMail(mailOptions)
             .then(() => {
-              res.json({
-                status: "pending",
-                message: "verification email sent",
-              });
+            
             })
             .catch((err) => {
               console.log(err);

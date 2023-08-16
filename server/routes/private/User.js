@@ -19,8 +19,15 @@ const ResetLimiter = rateLimit({
 
 
 
+const CreateLimiter = rateLimit({
+	windowMs: 2000, 
+	max: 1, 
+  message : 'Already send email' // Disable the `X-RateLimit-*` headers
+	// store: ... , // Use an external store for more precise rate limiting
+})
 
-router.post("/register" ,authControllers.register);
+
+router.post("/register" , CreateLimiter , authControllers.register);
 
 router.get("/user/verify/:userId/:uniqueString", authControllers.verify);
 
