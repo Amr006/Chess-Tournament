@@ -77,6 +77,7 @@ Get ready to play, learn, and triumph! 👑 Checkmate awaits. ♟️
   - uuid   <br/>
   - dotenv <br/>
   - node-cron <br />
+  - express-rate-limit <br />
 
 📌 Api's : lichess 
 </p>
