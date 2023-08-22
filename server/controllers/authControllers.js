@@ -690,7 +690,7 @@ const register = (req, res, next) => {
           })
           .catch((err) => {
             res.status(403).json({
-              message: "An Error Occurred!",
+              message: err.errors.Name.message,
             });
           });
       });
