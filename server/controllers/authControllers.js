@@ -610,13 +610,13 @@ const sendVerificationEmail = async ({ _id, Email }, type, res) => {
     const alreadySendCheck = await Userverification.findOne({ userId: _id });
     if (alreadySendCheck) {
       return res.status(402).json({
-        message: "You have already sent verification email",
+        message: "You have already sent a password reset email",
       });
     }else
     {
       res.json({
         status: "pending",
-        message: "verification email sent",
+        message: "Password reset email sent. Check your inbox",
       });
     }
   }else
