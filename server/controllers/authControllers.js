@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
 const nodemailer = require("nodemailer");
 const { v4: uuidv4 } = require("uuid");
+const validation = require('../util/validation_schema')
 
 require("dotenv").config();
 const axios = require("axios");
@@ -664,7 +665,20 @@ const sendVerificationEmail = async ({ _id, Email }, type, res) => {
   });
 };
 
-const register = (req, res, next) => {
+const register = async(req, res, next) => {
+  try{
+    const validate = await validation.registerSchema.validateAsync(req.body)
+
+  
+  }catch(err)
+  {
+    console.log(err)
+    return res.status(404).json({
+      message: err.details[0].message.replace(/"/g, '')
+    })
+  }
+  
+
   User.findOne({ Name: req.body.username_reg }).then((result) => {
     if (result) {
       res.status(403).json({
@@ -690,7 +704,7 @@ const register = (req, res, next) => {
           })
           .catch((err) => {
             res.status(403).json({
-              message: err.errors.Name.message,
+              message: err.message,
             });
           });
       });
