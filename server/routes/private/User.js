@@ -26,13 +26,18 @@ const CreateLimiter = rateLimit({
 	// store: ... , // Use an external store for more precise rate limiting
 })
 
+const LoginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+	max: 10, 
+  message : 'Too much request' // Disable the `X-RateLimit-*` headers
+})
 
 router.post("/register" , CreateLimiter , authControllers.register);
 
 router.get("/user/verify/:userId/:uniqueString", authControllers.verify);
 
 
-router.post("/login", authControllers.login);
+router.post("/login",LoginLimiter, authControllers.login);
 
 
 router.post(
