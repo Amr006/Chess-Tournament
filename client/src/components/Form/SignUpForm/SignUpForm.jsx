@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 
 //MUI
 import { Box, Button, TextField, Typography } from '@mui/material'
-import { MyButton } from '../../../MUIComponents/MyButton/MyButton'
+import LoadingButton from '../../LoadingButton/LoadingButton'
 
 const SignUpForm = ({values , touched, errors , handleBlur, handleChange}) => {
     const navigate = useNavigate() 
@@ -17,7 +17,7 @@ const SignUpForm = ({values , touched, errors , handleBlur, handleChange}) => {
             <TextField className={`grid-stretch pass`} label="Password" error={Boolean(touched.password_reg) && Boolean(errors.password_reg)} name='password_reg' type="password" value={values.password_reg} onChange={handleChange} id="password_reg" helperText={touched.password_reg && errors.password_reg} onBlur={handleBlur}/>
 
             <Box className={`flex-center btn`}>
-                <MyButton type="submit">Sign Up</MyButton>
+                <LoadingButton text={"Sign Up"}/>
             </Box>
             
             <Box className={`flex-center have_acc`}>
