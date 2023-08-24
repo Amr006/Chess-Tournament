@@ -666,17 +666,6 @@ const sendVerificationEmail = async ({ _id, Email }, type, res) => {
 };
 
 const register = async(req, res, next) => {
-  try{
-    const validate = await validation.registerSchema.validateAsync(req.body)
-
-  
-  }catch(err)
-  {
-    console.log(err)
-    return res.status(404).json({
-      message: err.details[0].message.replace(/"/g, '')
-    })
-  }
   
 
   User.findOne({ Name: req.body.username_reg }).then((result) => {
