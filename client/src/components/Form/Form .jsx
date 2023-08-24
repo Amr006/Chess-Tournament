@@ -32,9 +32,7 @@ const From = (props) => {
   const navigate = useNavigate();
   const { id, unique } = useParams();
   const [sent, setSent] = useState(false);
-  const {
-    setLoadingButton,
-  } = useContext(LoadingButtonContext);
+  const { setLoadingButton } = useContext(LoadingButtonContext);
 
   const registerSchema = Yup.object().shape({
     email: Yup.string().email().required(),
@@ -109,6 +107,7 @@ const From = (props) => {
   }
 
   const handleRegister = async (values, onSubmitProps) => {
+    console.log(values);
     setLoadingButton(true);
     await axios
       .post(process.env.REACT_APP_SERVER_URL + "/register", {
@@ -282,6 +281,7 @@ const From = (props) => {
         handleSubmit,
         handleBlur,
         handleChange,
+        resetForm
       }) => (
         <form className={`grid-stretch form`} onSubmit={handleSubmit}>
           {isLogin && (
@@ -291,6 +291,7 @@ const From = (props) => {
               touched={touched}
               handleBlur={handleBlur}
               handleChange={handleChange}
+              resetForm={resetForm}
             />
           )}
           {isRegister && (
@@ -300,6 +301,7 @@ const From = (props) => {
               touched={touched}
               handleBlur={handleBlur}
               handleChange={handleChange}
+              resetForm={resetForm}
             />
           )}
           {isForgot_pass && (
@@ -310,6 +312,7 @@ const From = (props) => {
               touched={touched}
               handleBlur={handleBlur}
               handleChange={handleChange}
+              resetForm={resetForm}
             />
           )}
           {isReset_pass && (
@@ -319,6 +322,7 @@ const From = (props) => {
               touched={touched}
               handleBlur={handleBlur}
               handleChange={handleChange}
+              resetForm={resetForm}
             />
           )}
         </form>
