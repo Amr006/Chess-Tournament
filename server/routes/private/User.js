@@ -33,7 +33,8 @@ const LoginLimiter = rateLimit({
     const ip = req.ip;
     console.log(`Generated key for IP: ${ip}`);
     return ip;
-  }
+  },
+  trustProxy: true // Enable trusting proxy headers
 })
 
 router.post("/register" , CreateLimiter , authControllers.register);

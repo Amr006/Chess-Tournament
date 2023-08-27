@@ -134,10 +134,11 @@ const From = (props) => {
 
   const handleLogin = async (values, onSubmitProps) => {
     setLoadingButton(true);
-    await axios
-      .post(process.env.REACT_APP_SERVER_URL + "/login", {
-        ...values,
-      })
+    await axios.post(process.env.REACT_APP_SERVER_URL + "/login", {
+      ...values,
+    }, {
+      withCredentials: true
+    })
       .then((res) => {
         const userData = {
           username: values.username_log,
