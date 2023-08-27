@@ -29,10 +29,9 @@ const LoginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
 	max: 10, 
   message : 'Too much request', // Disable the `X-RateLimit-*` headers
-  keyGenerator: function (req) {
-    const ip = req.ip;
-    console.log(`Generated key for IP: ${ip}`);
-    return ip;
+  keyGenerator: (req) => {
+    // Use the first IP address from X-Forwarded-For header
+    return req.headers['x-forwarded-for']?.split(',')[0] || req.ip;
   },
   trustProxy: true // Enable trusting proxy headers
 })
