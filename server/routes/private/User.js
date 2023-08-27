@@ -28,7 +28,10 @@ const CreateLimiter = rateLimit({
 const LoginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
 	max: 10, 
-  message : 'Too much request' // Disable the `X-RateLimit-*` headers
+  message : 'Too much request', // Disable the `X-RateLimit-*` headers
+  keyGenerator: function (req) {
+    return req.ip; // Generate key based on IP address
+  }
 })
 
 router.post("/register" , CreateLimiter , authControllers.register);
