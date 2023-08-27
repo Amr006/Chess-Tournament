@@ -6,7 +6,14 @@ import cookies from "js-cookie";
 import { Box, Button, TextField, Typography } from "@mui/material";
 import LoadingButton from "../../LoadingButton/LoadingButton";
 
-const LoginForm = ({ values, touched, errors, handleBlur, handleChange }) => {
+const LoginForm = ({
+  values,
+  resetForm,
+  touched,
+  errors,
+  handleBlur,
+  handleChange,
+}) => {
   const navigate = useNavigate();
   useEffect(() => {
     try {
@@ -49,7 +56,10 @@ const LoginForm = ({ values, touched, errors, handleBlur, handleChange }) => {
       <Box className={`flex-start forgot`}>
         <Typography variant="h5">Forgot your password?</Typography>
         <Button
-          onClick={() => navigate(process.env.REACT_APP_FORGOT_PASS_PAGE)}
+          onClick={() => {
+            navigate(process.env.REACT_APP_FORGOT_PASS_PAGE);
+            resetForm();
+          }}
         >
           Recover Password
         </Button>
