@@ -30,7 +30,9 @@ const LoginLimiter = rateLimit({
 	max: 10, 
   message : 'Too much request', // Disable the `X-RateLimit-*` headers
   keyGenerator: function (req) {
-    return req.ip; // Generate key based on IP address
+    const ip = req.ip;
+    console.log(`Generated key for IP: ${ip}`);
+    return ip;
   }
 })
 
