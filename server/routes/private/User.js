@@ -9,31 +9,37 @@ const axios = require("axios");
 const rateLimit = require('express-rate-limit')
 
 const ResetLimiter = rateLimit({
-	windowMs: 1000, 
-	max: 1, 
+	windowMs: 24 * 60 * 60 * 1000, // 24 hours
+	max: 3, 
 	standardHeaders: true, 
 	legacyHeaders: false,
-  message : 'Already send email' // Disable the `X-RateLimit-*` headers
-	// store: ... , // Use an external store for more precise rate limiting
-})
-
-
-const CreateLimiter = rateLimit({
-	windowMs: 2000, 
-	max: 1, 
-  message : 'Already send email' // Disable the `X-RateLimit-*` headers
-	// store: ... , // Use an external store for more precise rate limiting
-})
-
-const LoginLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-	max: 10, 
-  message : 'Too much request', // Disable the `X-RateLimit-*` headers
+  message : {message: "Too many password reset attempts, please try again later."}, 
   keyGenerator: (req) => {
     // Use the first IP address from X-Forwarded-For header
     return req.headers['x-forwarded-for']?.split(',')[0] || req.ip;
   },
-  trustProxy: true // Enable trusting proxy headers
+})
+
+
+const CreateLimiter = rateLimit({
+	windowMs: 30 * 60 * 1000, 
+	max: 5, 
+  message : {message: "Too many registration attempts, please try again later."},
+  keyGenerator: (req) => {
+    // Use the first IP address from X-Forwarded-For header
+    return req.headers['x-forwarded-for']?.split(',')[0] || req.ip;
+  },
+})
+
+const LoginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+	max: 5, 
+  message : {message: "Too many login attempts, please try again later."}, // Disable the `X-RateLimit-*` headers
+  keyGenerator: (req) => {
+    // Use the first IP address from X-Forwarded-For header
+    return req.headers['x-forwarded-for']?.split(',')[0] || req.ip;
+  },
+  
 })
 
 router.post("/register" , CreateLimiter , authControllers.register);

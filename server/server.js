@@ -5,7 +5,6 @@ const ip = "localhost";
 const Port = process.env.PORT || 3000 ;
 const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
 const session = require('express-session')
 const helmet = require('helmet')
 const path = require('path');
@@ -36,18 +35,28 @@ const corsOptions = {
   exposedHeaders: ['set-cookie'],
 };
 
-// const limiter = rateLimit({
-// 	windowMs: 15 * 60 * 1000, // 15 minutes
-// 	max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
-// 	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-// 	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
-// 	// store: ... , // Use an external store for more precise rate limiting
-// })
+const limiter = rateLimit({
+	windowMs: 15 * 60 * 1000, // 15 minutes
+	max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+  message : {message: "Too much request"},
+  keyGenerator: (req) => {
+    // Use the first IP address from X-Forwarded-For header
+    return req.headers['x-forwarded-for']?.split(',')[0] || req.ip;
+  },
+  
+	// store: ... , // Use an external store for more precise rate limiting
+})
 
-// app.use(limiter)
+// Apply the rate limiting middleware to all requests
+app.use(limiter)
 
 app.use(express.json()) //can remove
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ 
+  extended: true,
+  limit: '10mb' // Set your preferred limit here
+}));
 app.use(cookieParser());
 
 app.use(helmet({

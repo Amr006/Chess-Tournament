@@ -788,9 +788,7 @@ const verify = (req, res, next) => {
 };
 
 const login = (req, res, next) => {
-  console.log('Request IP:', req.ip);
-  console.log('X-Forwarded-For:', req.headers['x-forwarded-for']);
-  
+
   User.findOne({ Name: req.body.username_log })
     .then((user) => {
       if (user) {
