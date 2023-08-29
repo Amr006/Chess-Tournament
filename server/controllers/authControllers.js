@@ -668,20 +668,20 @@ const sendVerificationEmail = async ({ _id, Email }, type, res) => {
 const register = async(req, res, next) => {
   
 
-  User.findOne({ Name: req.body.username_reg }).then((result) => {
+  User.findOne({ Name: req.body.username }).then((result) => {
     if (result) {
       res.status(403).json({
         message: "Username Already Exists!",
       });
     } else {
-      bcrypt.hash(req.body.password_reg, 10, function (err, hashedPass) {
+      bcrypt.hash(req.body.password, 10, function (err, hashedPass) {
         if (err) {
           res.status(404).json({
             error: err,
           });
         }
         let user = new User({
-          Name: req.body.username_reg,
+          Name: req.body.username,
           Password: hashedPass,
           Email: req.body.email,
         });
@@ -788,7 +788,8 @@ const verify = (req, res, next) => {
 };
 
 const login = (req, res, next) => {
-  User.findOne({ Name: req.body.username_log })
+
+  User.findOne({ Name: req.body.username })
     .then((user) => {
       if (user) {
         if (!user.verified) {
@@ -798,7 +799,7 @@ const login = (req, res, next) => {
           });
         } else {
           bcrypt.compare(
-            req.body.password_log,
+            req.body.password,
             user.Password,
             function (err, result) {
               if (err) {
@@ -841,7 +842,7 @@ const login = (req, res, next) => {
 };
 
 const forgetPassword = (req, res, next) => {
-  const userName = req.body.forgot_pass_username;
+  const userName = req.body.username;
 
   User.findOne({ Name: userName })
     .then((result) => {
@@ -929,7 +930,7 @@ const resetPassword = async(req, res, next) => {
   const data = await Userverification.findOne({ uniqueString: userId });
   if (data) {
     await Userverification.deleteOne({ uniqueString: userId })
-    const newPassword = req.body.new_password;
+    const newPassword = req.body.password;
     console.log(data._id);
     bcrypt.hash(newPassword, 10, (err, hashedPass) => {
       if (err) {
