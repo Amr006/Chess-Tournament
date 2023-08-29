@@ -84,7 +84,6 @@ const From = (props) => {
   });
 
   const handleResetPasswordData = async () => {
-    setLoadingButton(true);
     await axios
       .get(
         process.env.REACT_APP_SERVER_URL + `/user/resetPassword/${id}/${unique}`
@@ -99,7 +98,6 @@ const From = (props) => {
           handleToastMessage("Error", "e");
         }
       });
-    setLoadingButton(false);
   };
 
   if (isReset_pass) {
@@ -176,7 +174,7 @@ const From = (props) => {
   const resetPasswordFormik = useFormik({
     initialValues: initialResetPasswordValues,
     validationSchema: resetPasswordSchema,
-    onSubmit: async (values, onSubmitProps) => {
+    onSubmit: async (values) => {
       setLoadingButton(true);
       let user_id = Cookies.get("user_id");
       user_id = JSON.parse(user_id);
@@ -188,7 +186,6 @@ const From = (props) => {
         .then((res) => {
           Cookies.remove("Forgot_Password_Username");
           navigate(process.env.REACT_APP_LOGIN_PAGE);
-          onSubmitProps.resetForm();
           handleToastMessage(res.data.message, "s");
         })
         .catch((err) => {
@@ -334,7 +331,6 @@ const From = (props) => {
   // };
 
   const handleVerify = async () => {
-    setLoadingButton(true);
     await axios
       .get(process.env.REACT_APP_SERVER_URL + `/user/verify/${id}/${unique}`)
       .then((res) => {
@@ -352,7 +348,6 @@ const From = (props) => {
           handleToastMessage("Error", "e");
         }
       });
-    setLoadingButton(false);
   };
 
   if (isVerify) {

@@ -10,16 +10,13 @@ import App from "./App";
 
 //Style
 import "./index.css";
-import { LoadingButtonProvider } from "./context/LoadingButtonContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
-  <LoadingButtonProvider>
-    <Provider store={store}>
-      <RouterProvider router={router}>
-        <App />
-      </RouterProvider>
-    </Provider>
-  </LoadingButtonProvider>
+  <Provider store={store}>
+    <RouterProvider router={router}>
+      <App />
+    </RouterProvider>
+  </Provider>
 );
