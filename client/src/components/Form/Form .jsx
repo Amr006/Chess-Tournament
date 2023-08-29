@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setUserData } from "../../store/slices/authSlice";
 import { handleToastMessage } from "../../App";
-import { Formik } from "formik";
+import { useFormik } from "formik";
 import Cookies from "js-cookie";
 import axios from "axios";
 import * as Yup from "yup";
@@ -34,54 +34,54 @@ const From = (props) => {
   const [sent, setSent] = useState(false);
   const { setLoadingButton } = useContext(LoadingButtonContext);
 
-  const registerSchema = Yup.object().shape({
-    email: Yup.string().email().required(),
-    username_reg: Yup.string().required("Username is Required"),
-    password_reg: Yup.string().required("Password is Required").min(8),
-  });
-
-  const loginSchema = Yup.object().shape({
-    username_log: Yup.string().required("Username is Required"),
-    password_log: Yup.string().required("Password is Required"),
-  });
-
-  const forgotPassSchema = Yup.object().shape({
-    forgot_pass_username: Yup.string().required("Username is Required"),
-  });
-
-  const resetPasswordSchema = Yup.object().shape({
-    new_password: Yup.string().required().min(8),
-    confirm_password: Yup.string()
-      .required()
-      .min(8)
-      .when("new_password", (new_password, field) =>
-        new_password
-          ? field
-              .required("Password isn't Matched")
-              .oneOf([Yup.ref("new_password")])
-          : field
-      ),
-  });
-
   const initialLoginValues = {
-    username_log: "",
-    password_log: "",
+    username: "",
+    password: "",
   };
 
   const initialRegisterValues = {
     email: "",
-    username_reg: "",
-    password_reg: "",
+    username: "",
+    password: "",
   };
 
   const initialForgotPassValues = {
-    forgot_pass_username: "",
+    username: "",
   };
 
   const initialResetPasswordValues = {
-    new_password: "",
+    password: "",
     confirm_password: "",
   };
+
+  const registerSchema = Yup.object({
+    email: Yup.string().email().required(),
+    username: Yup.string().required("Username is Required"),
+    password: Yup.string().required("Password is Required").min(8),
+  });
+
+  const loginSchema = Yup.object({
+    username: Yup.string().required("Username is Required"),
+    password: Yup.string().required("Password is Required"),
+  });
+
+  const forgotPassSchema = Yup.object({
+    username: Yup.string().required("Username is Required"),
+  });
+
+  const resetPasswordSchema = Yup.object({
+    password: Yup.string().required().min(8),
+    confirm_password: Yup.string()
+      .required()
+      .min(8)
+      .when("password", (password, field) =>
+        password
+          ? field
+              .required("Password isn't Matched")
+              .oneOf([Yup.ref("password")])
+          : field
+      ),
+  });
 
   const handleResetPasswordData = async () => {
     setLoadingButton(true);
@@ -106,112 +106,232 @@ const From = (props) => {
     handleResetPasswordData();
   }
 
-  const handleRegister = async (values, onSubmitProps) => {
-    console.log(values);
-    setLoadingButton(true);
-    await axios
-      .post(process.env.REACT_APP_SERVER_URL + "/register", {
-        ...values,
-      })
-      .then((res) => {
-        try {
+  const registerFormik = useFormik({
+    initialValues: initialRegisterValues,
+    validationSchema: registerSchema,
+    onSubmit: async (values, onSubmitProps) => {
+      setLoadingButton(true);
+      await axios
+        .post(process.env.REACT_APP_SERVER_URL + "/register", {
+          ...values,
+        })
+        .then((res) => {
+          try {
+            handleToastMessage(res.data.message, "s");
+          } catch (error) {
+            handleToastMessage("Email is Created Successfully", "s");
+          }
+          navigate("/login");
+          onSubmitProps.resetForm();
+        })
+        .catch((err) => {
+          try {
+            handleToastMessage(err.response.data.message, "e");
+          } catch (error) {
+            handleToastMessage("Error", "e");
+          }
+        });
+      setLoadingButton(false);
+    },
+  });
+
+  const loginFormik = useFormik({
+    initialValues: initialLoginValues,
+    validationSchema: loginSchema,
+    onSubmit: async (values) => {
+      setLoadingButton(true);
+      await axios
+        .post(process.env.REACT_APP_SERVER_URL + "/login", {
+          ...values,
+        })
+        .then((res) => {
+          const userData = {
+            username: values.username,
+            token: res.data.token,
+            role: res.data.role,
+            tutorial: res.data.tutorial,
+          };
+          Cookies.set("user_data", JSON.stringify(userData), { expires: 7 });
+          Cookies.set("token", res.data.token, { expires: 7 });
+          dispatch(setUserData(userData));
+          navigate("/");
+          try {
+            Cookies.remove("user_id");
+          } catch (error) {
+            console.log(error);
+          }
+          handleToastMessage(`Welcome ${values.username}`, "s");
+        })
+        .catch((err) => {
+          try {
+            handleToastMessage(err.response.data.message, "e");
+          } catch (error) {
+            handleToastMessage("Error", "e");
+          }
+        });
+      setLoadingButton(false);
+    },
+  });
+
+  const resetPasswordFormik = useFormik({
+    initialValues: initialResetPasswordValues,
+    validationSchema: resetPasswordSchema,
+    onSubmit: async (values, onSubmitProps) => {
+      setLoadingButton(true);
+      let user_id = Cookies.get("user_id");
+      user_id = JSON.parse(user_id);
+      values = { ...values, user_id };
+      await axios
+        .post(process.env.REACT_APP_SERVER_URL + `/ResetPassword`, {
+          ...values,
+        })
+        .then((res) => {
+          Cookies.remove("Forgot_Password_Username");
+          navigate(process.env.REACT_APP_LOGIN_PAGE);
+          onSubmitProps.resetForm();
           handleToastMessage(res.data.message, "s");
-        } catch (error) {
-          handleToastMessage("Email is Created Successfully", "s");
-        }
-        navigate("/login");
-        onSubmitProps.resetForm();
-      })
-      .catch((err) => {
-        try {
+        })
+        .catch((err) => {
           handleToastMessage(err.response.data.message, "e");
-        } catch (error) {
-          handleToastMessage("Error", "e");
-        }
-      });
-    setLoadingButton(false);
-  };
+        });
+      setLoadingButton(false);
+    },
+  });
 
-  const handleLogin = async (values, onSubmitProps) => {
-    setLoadingButton(true);
-    await axios
-      .post(process.env.REACT_APP_SERVER_URL + "/login", {
-        ...values,
-      })
-      .then((res) => {
-        const userData = {
-          username: values.username_log,
-          token: res.data.token,
-          role: res.data.role,
-          tutorial: res.data.tutorial,
-        };
-        Cookies.set("user_data", JSON.stringify(userData), { expires: 7 });
-        Cookies.set("token", res.data.token, { expires: 7 });
-        dispatch(setUserData(userData));
-        navigate("/");
-        try {
-          Cookies.remove("user_id");
-        } catch (error) {
-          console.log(error);
-        }
-        onSubmitProps.resetForm();
-        handleToastMessage(`Welcome ${values.username_log}`, "s");
-      })
-      .catch((err) => {
-        try {
-          handleToastMessage(err.response.data.message, "e");
-        } catch (error) {
-          handleToastMessage("Error", "e");
-        }
-      });
-    setLoadingButton(false);
-  };
+  const forgotPasswordFormik = useFormik({
+    initialValues: initialForgotPassValues,
+    validationSchema: forgotPassSchema,
+    onSubmit: async (values, onSubmitProps) => {
+      setLoadingButton(true);
+      await axios
+        .post(process.env.REACT_APP_SERVER_URL + "/ForgotPassword", {
+          ...values,
+        })
+        .then((res) => {
+          setSent(true);
+          onSubmitProps.resetForm();
+          try {
+            handleToastMessage(res.data.message, "s");
+          } catch (error) {
+            handleToastMessage("Check your Mail", "s");
+          }
+        })
+        .catch((err) => {
+          try {
+            handleToastMessage(err.response.data.message, "e");
+          } catch (error) {
+            handleToastMessage("Error", "e");
+          }
+        });
+      setLoadingButton(false);
+    },
+  });
 
-  const handleForgotPassword = async (values, onSubmitProps) => {
-    setLoadingButton(true);
-    await axios
-      .post(process.env.REACT_APP_SERVER_URL + "/ForgotPassword", {
-        ...values,
-      })
-      .then((res) => {
-        setSent(true);
-        onSubmitProps.resetForm();
-        try {
-          handleToastMessage(res.data.message, "s");
-        } catch (error) {
-          handleToastMessage("Check your Mail", "s");
-        }
-      })
-      .catch((err) => {
-        try {
-          handleToastMessage(err.response.data.message, "e");
-        } catch (error) {
-          handleToastMessage("Error", "e");
-        }
-      });
-    setLoadingButton(false);
-  };
+  // const handleRegister = async (values, onSubmitProps) => {
+  //   setLoadingButton(true);
+  //   await axios
+  //     .post(process.env.REACT_APP_SERVER_URL + "/register", {
+  //       ...values,
+  //     })
+  //     .then((res) => {
+  //       try {
+  //         handleToastMessage(res.data.message, "s");
+  //       } catch (error) {
+  //         handleToastMessage("Email is Created Successfully", "s");
+  //       }
+  //       navigate("/login");
+  //       onSubmitProps.resetForm();
+  //     })
+  //     .catch((err) => {
+  //       try {
+  //         handleToastMessage(err.response.data.message, "e");
+  //       } catch (error) {
+  //         handleToastMessage("Error", "e");
+  //       }
+  //     });
+  //   setLoadingButton(false);
+  // };
 
-  const handleResetPassword = async (values, onSubmitProps) => {
-    setLoadingButton(true);
-    let user_id = Cookies.get("user_id");
-    user_id = JSON.parse(user_id);
-    values = { ...values, user_id };
-    await axios
-      .post(process.env.REACT_APP_SERVER_URL + `/ResetPassword`, {
-        ...values,
-      })
-      .then((res) => {
-        Cookies.remove("Forgot_Password_Username");
-        navigate(process.env.REACT_APP_LOGIN_PAGE);
-        onSubmitProps.resetForm();
-        handleToastMessage(res.data.message, "s");
-      })
-      .catch((err) => {
-        handleToastMessage(err.response.data.message, "e");
-      });
-    setLoadingButton(false);
-  };
+  // const handleLogin = async (values, onSubmitProps) => {
+  //   setLoadingButton(true);
+  //   await axios
+  //     .post(process.env.REACT_APP_SERVER_URL + "/login", {
+  //       ...values,
+  //     })
+  //     .then((res) => {
+  //       const userData = {
+  //         username: values.username_log,
+  //         token: res.data.token,
+  //         role: res.data.role,
+  //         tutorial: res.data.tutorial,
+  //       };
+  //       Cookies.set("user_data", JSON.stringify(userData), { expires: 7 });
+  //       Cookies.set("token", res.data.token, { expires: 7 });
+  //       dispatch(setUserData(userData));
+  //       navigate("/");
+  //       try {
+  //         Cookies.remove("user_id");
+  //       } catch (error) {
+  //         console.log(error);
+  //       }
+  //       onSubmitProps.resetForm();
+  //       handleToastMessage(`Welcome ${values.username_log}`, "s");
+  //     })
+  //     .catch((err) => {
+  //       try {
+  //         handleToastMessage(err.response.data.message, "e");
+  //       } catch (error) {
+  //         handleToastMessage("Error", "e");
+  //       }
+  //     });
+  //   setLoadingButton(false);
+  // };
+
+  // const handleForgotPassword = async (values, onSubmitProps) => {
+  //   setLoadingButton(true);
+  //   await axios
+  //     .post(process.env.REACT_APP_SERVER_URL + "/ForgotPassword", {
+  //       ...values,
+  //     })
+  //     .then((res) => {
+  //       setSent(true);
+  //       onSubmitProps.resetForm();
+  //       try {
+  //         handleToastMessage(res.data.message, "s");
+  //       } catch (error) {
+  //         handleToastMessage("Check your Mail", "s");
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       try {
+  //         handleToastMessage(err.response.data.message, "e");
+  //       } catch (error) {
+  //         handleToastMessage("Error", "e");
+  //       }
+  //     });
+  //   setLoadingButton(false);
+  // };
+
+  // const handleResetPassword = async (values, onSubmitProps) => {
+  //   setLoadingButton(true);
+  //   let user_id = Cookies.get("user_id");
+  //   user_id = JSON.parse(user_id);
+  //   values = { ...values, user_id };
+  //   await axios
+  //     .post(process.env.REACT_APP_SERVER_URL + `/ResetPassword`, {
+  //       ...values,
+  //     })
+  //     .then((res) => {
+  //       Cookies.remove("Forgot_Password_Username");
+  //       navigate(process.env.REACT_APP_LOGIN_PAGE);
+  //       onSubmitProps.resetForm();
+  //       handleToastMessage(res.data.message, "s");
+  //     })
+  //     .catch((err) => {
+  //       handleToastMessage(err.response.data.message, "e");
+  //     });
+  //   setLoadingButton(false);
+  // };
 
   const handleVerify = async () => {
     setLoadingButton(true);
@@ -244,90 +364,28 @@ const From = (props) => {
   }
 
   return (
-    <Formik
-      initialValues={
-        isLogin
-          ? initialLoginValues
-          : isRegister
-          ? initialRegisterValues
-          : isReset_pass
-          ? initialResetPasswordValues
-          : isForgot_pass && initialForgotPassValues
-      }
-      validationSchema={
-        isLogin
-          ? loginSchema
-          : isRegister
-          ? registerSchema
-          : isReset_pass
-          ? resetPasswordSchema
-          : isForgot_pass && forgotPassSchema
-      }
-      className={`flex-center`}
+    <form
+      className={`grid-stretch form`}
       onSubmit={
-        isRegister
-          ? handleRegister
-          : isLogin
-          ? handleLogin
-          : isForgot_pass
-          ? handleForgotPassword
-          : handleResetPassword
+        isLogin
+          ? loginFormik.handleSubmit
+          : isRegister
+          ? registerFormik.handleSubmit
+          : isReset_pass
+          ? resetPasswordFormik.handleSubmit
+          : isForgot_pass && forgotPasswordFormik.handleSubmit
       }
     >
-      {({
-        values,
-        errors,
-        touched,
-        handleSubmit,
-        handleBlur,
-        handleChange,
-        resetForm
-      }) => (
-        <form className={`grid-stretch form`} onSubmit={handleSubmit}>
-          {isLogin && (
-            <LoginForm
-              values={values}
-              errors={errors}
-              touched={touched}
-              handleBlur={handleBlur}
-              handleChange={handleChange}
-              resetForm={resetForm}
-            />
-          )}
-          {isRegister && (
-            <SignUpForm
-              values={values}
-              errors={errors}
-              touched={touched}
-              handleBlur={handleBlur}
-              handleChange={handleChange}
-              resetForm={resetForm}
-            />
-          )}
-          {isForgot_pass && (
-            <ForgotPasswordForm
-              sent={sent}
-              values={values}
-              errors={errors}
-              touched={touched}
-              handleBlur={handleBlur}
-              handleChange={handleChange}
-              resetForm={resetForm}
-            />
-          )}
-          {isReset_pass && (
-            <ResetPasswordForm
-              values={values}
-              errors={errors}
-              touched={touched}
-              handleBlur={handleBlur}
-              handleChange={handleChange}
-              resetForm={resetForm}
-            />
-          )}
-        </form>
+      {isLogin ? (
+        <LoginForm formik={loginFormik} />
+      ) : isRegister ? (
+        <SignUpForm formik={registerFormik} />
+      ) : isForgot_pass ? (
+        <ForgotPasswordForm sent={sent} formik={forgotPasswordFormik} />
+      ) : (
+        isReset_pass && <ResetPasswordForm formik={resetPasswordFormik} />
       )}
-    </Formik>
+    </form>
   );
 };
 

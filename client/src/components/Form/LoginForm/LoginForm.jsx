@@ -6,14 +6,7 @@ import cookies from "js-cookie";
 import { Box, Button, TextField, Typography } from "@mui/material";
 import LoadingButton from "../../LoadingButton/LoadingButton";
 
-const LoginForm = ({
-  values,
-  resetForm,
-  touched,
-  errors,
-  handleBlur,
-  handleChange,
-}) => {
+const LoginForm = ({ formik }) => {
   const navigate = useNavigate();
   useEffect(() => {
     try {
@@ -31,26 +24,32 @@ const LoginForm = ({
       <TextField
         className={`grid-stretch email`}
         label="Username"
-        name="username_log"
-        value={values.username_log}
-        onChange={handleChange}
-        id="username_log"
-        error={Boolean(touched.username_log) && Boolean(errors.username_log)}
-        helperText={touched.username_log && errors.username_log}
-        onBlur={handleBlur}
+        name="username"
+        value={formik.values.username}
+        onChange={formik.handleChange}
+        id="username"
+        error={
+          Boolean(formik.touched.username) &&
+          Boolean(formik.errors.username)
+        }
+        helperText={formik.touched.username && formik.errors.username}
+        onBlur={formik.handleBlur}
       />
 
       <TextField
         className={`grid-stretch pass`}
         label="Password"
-        error={Boolean(touched.password_log) && Boolean(errors.password_log)}
-        name="password_log"
+        error={
+          Boolean(formik.touched.password) &&
+          Boolean(formik.errors.password)
+        }
+        name="password"
         type="password"
-        value={values.password_log}
-        onChange={handleChange}
-        id="password_log"
-        helperText={touched.password_log && errors.password_log}
-        onBlur={handleBlur}
+        value={formik.values.password}
+        onChange={formik.handleChange}
+        id="password"
+        helperText={formik.touched.password && formik.errors.password}
+        onBlur={formik.handleBlur}
       />
 
       <Box className={`flex-start forgot`}>
@@ -58,7 +57,6 @@ const LoginForm = ({
         <Button
           onClick={() => {
             navigate(process.env.REACT_APP_FORGOT_PASS_PAGE);
-            resetForm();
           }}
         >
           Recover Password

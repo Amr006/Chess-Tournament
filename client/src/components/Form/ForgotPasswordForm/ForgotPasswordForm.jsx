@@ -4,14 +4,7 @@ import React from "react";
 import { Box, TextField, Typography } from "@mui/material";
 import LoadingButton from "../../LoadingButton/LoadingButton";
 
-const ForgotPasswordForm = ({
-  sent,
-  values,
-  touched,
-  errors,
-  handleBlur,
-  handleChange,
-}) => {
+const ForgotPasswordForm = ({ sent,formik }) => {
   if (!sent) {
     return (
       <>
@@ -25,18 +18,18 @@ const ForgotPasswordForm = ({
         <TextField
           className={`grid-stretch email`}
           label="Username"
-          name="forgot_pass_username"
-          value={values.forgot_pass_username}
-          onChange={handleChange}
-          id="forgot_pass_username"
+          name="username"
+          value={formik.values.username}
+          onChange={formik.handleChange}
+          id="username"
           error={
-            Boolean(touched.forgot_pass_username) &&
-            Boolean(errors.forgot_pass_username)
+            Boolean(formik.touched.username) &&
+            Boolean(formik.errors.username)
           }
           helperText={
-            touched.forgot_pass_username && errors.forgot_pass_username
+            formik.touched.username && formik.errors.username
           }
-          onBlur={handleBlur}
+          onBlur={formik.handleBlur}
         />
 
         <Box className={`flex-center btn`}>

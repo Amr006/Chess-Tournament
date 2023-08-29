@@ -4,13 +4,7 @@ import React from "react";
 import { Box, TextField, Typography } from "@mui/material";
 import LoadingButton from "../../LoadingButton/LoadingButton";
 
-const ResetPasswordForm = ({
-  values,
-  touched,
-  errors,
-  handleBlur,
-  handleChange,
-}) => {
+const ResetPasswordForm = ({ formik }) => {
   return (
     <>
       <Typography variant="h3" className={`text-center game-font flex-center`}>
@@ -20,29 +14,31 @@ const ResetPasswordForm = ({
       <TextField
         className={`grid-stretch pass`}
         label="New Password"
-        error={Boolean(touched.new_password) && Boolean(errors.new_password)}
-        name="new_password"
+        error={
+          Boolean(formik.touched.password) && Boolean(formik.errors.password)
+        }
+        name="password"
         type="password"
-        value={values.new_password}
-        onChange={handleChange}
-        id="new_password"
-        helperText={touched.new_password && errors.new_password}
-        onBlur={handleBlur}
+        value={formik.values.password}
+        onChange={formik.handleChange}
+        id="password"
+        helperText={formik.touched.password && formik.errors.password}
+        onBlur={formik.handleBlur}
       />
 
       <TextField
         className={`grid-stretch pass`}
         label="Confirm Password"
         error={
-          Boolean(touched.confirm_password) && Boolean(errors.confirm_password)
+          Boolean(formik.touched.confirm_password) && Boolean(formik.errors.confirm_password)
         }
         name="confirm_password"
         type="password"
-        value={values.confirm_password}
-        onChange={handleChange}
+        value={formik.values.confirm_password}
+        onChange={formik.handleChange}
         id="confirm_password"
-        helperText={touched.confirm_password && errors.confirm_password}
-        onBlur={handleBlur}
+        helperText={formik.touched.confirm_password && formik.errors.confirm_password}
+        onBlur={formik.handleBlur}
       />
 
       <Box className={`flex-center btn`}>
