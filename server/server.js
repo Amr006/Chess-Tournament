@@ -12,6 +12,7 @@ const cors = require('cors')
 const bodyParser = require('body-parser')
 const rateLimit = require('express-rate-limit')
 
+
 const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 const HomeRoutes = require('./routes/public/Home')
 const UserRoutes = require('./routes/private/User')
